@@ -82,7 +82,7 @@ The server will respond with:
     "result": 100.0
 }
 ```
-##How It Works
+## How It Works
 
 1. The user sends a natural language query to the /chat/ endpoint.
 2. The query is sent to the Groq API using the LLaMA 3 70B model.
@@ -90,7 +90,7 @@ The server will respond with:
 4. The determined function is called with the extracted parameters.
 5. The result is returned to the user.
 
-##Project Structure
+## Project Structure
 
 - chat/services.py: Contains the core logic for processing queries and calling functions.
 - chat/lib/constants.py: Defines the FUNCTION_DICT and SYSTEM_PROMPT.
