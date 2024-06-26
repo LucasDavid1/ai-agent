@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
-from chat.services import determine_function_and_call
+from chat.services import GroqHandler
 
 
 @csrf_exempt
@@ -12,7 +12,7 @@ def chat_view(request):
         data = json.loads(request.body)
         user_input = data.get('message', '')
 
-        result = determine_function_and_call(user_input)
+        result = GroqHandler().determine_function_and_call(user_input=user_input)
 
         response = {
             'status': 'success',
