@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import pymongo
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,10 +80,16 @@ WSGI_APPLICATION = 'ai_agent.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-connection_string = f'mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_DB_HOST}/{MONGODB_DB_NAME}?retryWrites=true&w=majority&appName=ai-agent-cluster'
-client = pymongo.MongoClient(connection_string)
-db = client.get_database()
-
+DATABASES = {
+   'default': {
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': os.environ.get("POSTGRES_DB"),
+        'USER': os.environ.get("POSTGRES_USER"),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT')
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
