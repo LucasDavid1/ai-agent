@@ -16,7 +16,7 @@ The AI agent interprets user queries, determines the appropriate mathematical fu
 ## Setup
 
 1. Clone the repository
-2. make up
+2. Set up the environment variables in `.env`
 
 
 ## Usage
@@ -47,7 +47,7 @@ The AI agent interprets user queries, determines the appropriate mathematical fu
 
 ## Key Features
 
-- Natural language processing of mathematical queries
+- Natural language processing of Postgres queries
 - Integration with Groq API
 - Dynamic function calling based on AI interpretation
 - RESTful API endpoint for easy integration
@@ -56,31 +56,31 @@ The AI agent interprets user queries, determines the appropriate mathematical fu
 
 1. Clone the repository
 2. Install dependencies:
-pip install -r requirements.txt
-Copy3. Set up environment variables:
+`pip install -r requirements.txt`
 - `GROQ_API_KEY`: Your Groq API key
-- Other necessary database and Django settings
+- `POSTGRES`: Postgres credentials
 
 4. Run migrations:
-python manage.py migrate
-Copy5. Start the Django server:
-python manage.py runserver
-Copy
+`make migrate`
+Start the Django server:
+`make up`
+
 
 ## How It Works
 
 1. The user sends a natural language query to the /chat/ endpoint.
 2. The query is sent to the Groq API using the LLaMA 3 70B model.
-3. The AI interprets the query and determines the appropriate mathematical function to use.
+3. The AI interprets the query and determines the appropriate function to use.
 4. The determined function is called with the extracted parameters.
 5. The result is returned to the user.
 
 ## Project Structure
 
-- chat/services.py: Contains the core logic for processing queries and calling functions.
-- chat/lib/constants.py: Defines the FUNCTION_DICT and SYSTEM_PROMPT.
-- chat/views.py: Handles the API endpoint and request processing.
-- ai_agent/settings.py: Contains project settings and API keys.
+- `chat/services.py`: Contains the core logic for processing queries and calling functions.
+- `chat/providers.py`: functions for interacting with the database.
+- `chat/lib/constants.py`: Defines the FUNCTION_DICT and SYSTEM_PROMPT.
+- `chat/views.py`: Handles the API endpoint and request processing.
+- `ai_agent/settings.py`: Contains project settings and API keys.
 
 ## Available Functions and Extensibility
 
@@ -118,7 +118,7 @@ The true power of this system lies in its extensibility. You can define any cust
 
 To add new functions to your AI agent's capabilities:
 
-1. Define the new function in `chat/functions.py`
+1. Define the new function in `chat/providers.py`
 2. Add the function to `FUNCTION_DICT` in `constants.py`
 3. Update the `SYSTEM_PROMPT` in `constants.py` to include information about the new function. This helps the AI understand when and how to use the new function.
 
