@@ -29,8 +29,14 @@ def create_band(name, formation_year, genre, member_ids):
     try:
         band = Band.objects.get(name=name)
     except ObjectDoesNotExist:
-        band = Band.objects.create(name=name, formation_year=formation_year, genre=genre)
-        band.members.set(member_ids)
+        band = Band.objects.create(
+            name=name,
+            formation_year=formation_year,
+            genre=genre
+        )
+    if member_ids:
+        members = Artist.objects.filter(id__in=member_ids)
+        band.members.set(members)
     return band
 
 

@@ -62,6 +62,43 @@ class GroqHandler:
             return "parse_error", {}
 
 
+    def execute_operations(self, processed_output):
+        results = []
+        context = {
+            'created_artists': {},
+            'created_band': None
+        }
+
+        for operation in processed_output:
+            func_name = operation['function']
+            args = operation['arguments']
+            
+            if func_name == 'create_artist':
+                result = call_function(func_name, **args)
+                context['created_artists'][result.id] = result
+            elif func_name == 'create_band':
+                member_ids = args.get('member_ids', [])
+                args['member_ids'] = [
+                    context['created_artists'][id].id 
+                    if id in context['created_artists'] 
+                    else id 
+                    for id in member_ids
+                ]
+                result = call_function(func_name, **args)
+                context['created_band'] = result
+            elif func_name == 'create_album':
+                if 'release_date' in args:
+                    args['release_date'] = datetime.strptime(args['release_date'], "%Y-%m-%d").date()
+                if 'band_id' in args and isinstance(args['band_id'], int):
+                    args['band_id'] = context['created_band'].id if context['created_band'] else args['band_id']
+                result = call_function(func_name, **args)
+            else:
+                result = call_function(func_name, **args)
+            
+            results.append(result)
+
+        return results
+
     def determine_function_and_call(self, user_input):
         model_output = self.get_completion(user_input)
         print("model_output", model_output)
@@ -70,35 +107,4 @@ class GroqHandler:
         if processed_output == "parse_error":
             return "Error: Could not parse the model output"
         
-        results = []
-        created_artists = {}
-        created_band = None
-
-        for operation in processed_output:
-            func_name = operation['function']
-            args = operation['arguments']
-            print("func_name", func_name)
-            print("args", args)
-            
-            if func_name == 'create_artist':
-                result = call_function(func_name, **args)
-                created_artists[result.id] = result
-                results.append(result)
-            elif func_name == 'create_band':
-                member_ids = args.get('member_ids', [])
-                args['member_ids'] = [created_artists.get(id) for id in member_ids if id in created_artists]
-                result = call_function(func_name, **args)
-                created_band = result
-                results.append(result)
-            elif func_name == 'create_album':
-                if 'release_date' in args:
-                    args['release_date'] = datetime.strptime(args['release_date'], "%Y-%m-%d").date()
-                if 'band_id' in args and isinstance(args['band_id'], int):
-                    args['band_id'] = created_band.id if created_band else args['band_id']
-                result = call_function(func_name, **args)
-                results.append(result)
-            else:
-                result = call_function(func_name, **args)
-                results.append(result)
-        
-        return results
+        return self.execute_operations(processed_output)
