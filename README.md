@@ -25,14 +25,51 @@ Send a POST request to `http://localhost:8000/chat/` with a JSON body:
 
 ```json
 {
- "message": "need to know how many doctors we need if we have 500 patients and a doctor can attend 5 patients"
+ "message": "what artist exists who play the guitar"
 }
 ```
 The server will respond with:
 ```json
 {
     "status": "success",
-    "result": 100.0
+    "result": [
+        {
+            "model": "chat.artist",
+            "pk": 2,
+            "fields": {
+                "name": "Brian May",
+                "instrument": "Guitar",
+                "country": "UK"
+            }
+        },
+        {
+            "model": "chat.artist",
+            "pk": 4,
+            "fields": {
+                "name": "John Deacon",
+                "instrument": "Bass Guitar",
+                "country": "UK"
+            }
+        },
+        {
+            "model": "chat.artist",
+            "pk": 6,
+            "fields": {
+                "name": "Keith Richards",
+                "instrument": "Guitar",
+                "country": "UK"
+            }
+        },
+        {
+            "model": "chat.artist",
+            "pk": 8,
+            "fields": {
+                "name": "Ronnie Wood",
+                "instrument": "Guitar",
+                "country": "UK"
+            }
+        }
+    ]
 }
 ```
 

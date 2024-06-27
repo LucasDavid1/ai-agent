@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.serializers import serialize
+from django.db.models.query import QuerySet
 
 import json
 
@@ -15,19 +16,28 @@ def chat_view(request):
         data = json.loads(request.body)
         user_input = data.get('message', '')
 
-        result = GroqHandler().determine_function_and_call(user_input=user_input)
+        results = GroqHandler().determine_function_and_call(user_input=user_input)
 
-        if hasattr(result, 'model'):
-            result = json.loads(serialize('json', result))
-        elif isinstance(result, list) and all(hasattr(item, 'model') for item in result):
-            result = json.loads(serialize('json', result))
+        def serialize_result(result):
+            if isinstance(result, QuerySet):
+                return json.loads(serialize('json', result))
+            elif hasattr(result, '_meta'):
+                return json.loads(serialize('json', [result]))[0]
+            elif isinstance(result, list):
+                return [serialize_result(item) for item in result]
+            elif isinstance(result, dict):
+                return {k: serialize_result(v) for k, v in result.items()}
+            else:
+                return result
+
+        serialized_results = serialize_result(results)
 
         response = {
             'status': 'success',
-            'result': result
+            'result': serialized_results
         }
 
-        return JsonResponse(response)
+        return JsonResponse(response, safe=False)
 
     except json.JSONDecodeError:
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)

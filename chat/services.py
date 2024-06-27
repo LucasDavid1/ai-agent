@@ -1,5 +1,6 @@
 from groq import Groq
 import json
+from datetime import datetime
 
 from chat.lib.constants import FUNCTION_DICT, SYSTEM_PROMPT, GROQ_MODEL
 import ai_agent.settings as settings
@@ -51,16 +52,53 @@ class GroqHandler:
     def process_output(self, model_output):
         try:
             output = json.loads(model_output)
-            return output['function'], output['arguments']
+            if isinstance(output, list):
+                return output
+            elif isinstance(output, dict) and 'function' in output:
+                return [output]
+            else:
+                return "parse_error", {}
         except json.JSONDecodeError:
             return "parse_error", {}
 
+
     def determine_function_and_call(self, user_input):
         model_output = self.get_completion(user_input)
-        func_name, args = self.process_output(model_output)
         print("model_output", model_output)
-        print("func_name", func_name)
-        print("args", args)
-        if func_name == "parse_error":
+        
+        processed_output = self.process_output(model_output)
+        if processed_output == "parse_error":
             return "Error: Could not parse the model output"
-        return call_function(func_name, **args)
+        
+        results = []
+        created_artists = {}
+        created_band = None
+
+        for operation in processed_output:
+            func_name = operation['function']
+            args = operation['arguments']
+            print("func_name", func_name)
+            print("args", args)
+            
+            if func_name == 'create_artist':
+                result = call_function(func_name, **args)
+                created_artists[result.id] = result
+                results.append(result)
+            elif func_name == 'create_band':
+                member_ids = args.get('member_ids', [])
+                args['member_ids'] = [created_artists.get(id) for id in member_ids if id in created_artists]
+                result = call_function(func_name, **args)
+                created_band = result
+                results.append(result)
+            elif func_name == 'create_album':
+                if 'release_date' in args:
+                    args['release_date'] = datetime.strptime(args['release_date'], "%Y-%m-%d").date()
+                if 'band_id' in args and isinstance(args['band_id'], int):
+                    args['band_id'] = created_band.id if created_band else args['band_id']
+                result = call_function(func_name, **args)
+                results.append(result)
+            else:
+                result = call_function(func_name, **args)
+                results.append(result)
+        
+        return results

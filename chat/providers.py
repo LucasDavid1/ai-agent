@@ -1,21 +1,51 @@
 from django.db.models import Q
+from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
 
 from chat.models import Artist, Band, Album
 
 
 def create_artist(name, instrument, country):
-    return Artist.objects.create(name=name, instrument=instrument, country=country)
+    existing_artists = Artist.objects.filter(name=name)
+    
+    if existing_artists.exists():
+        exact_match = existing_artists.filter(instrument=instrument, country=country).first()
+        
+        if exact_match:
+            return exact_match
+        else:
+            new_name = f"{name} ({instrument})"
+            artist, _ = Artist.objects.get_or_create(
+                name=new_name,
+                defaults={'instrument': instrument, 'country': country}
+            )
+            return artist
+    else:
+        artist = Artist.objects.create(name=name, instrument=instrument, country=country)
+        return artist
 
 
 def create_band(name, formation_year, genre, member_ids):
-    band = Band.objects.create(name=name, formation_year=formation_year, genre=genre)
-    members = Artist.objects.filter(id__in=member_ids)
-    band.members.add(*members)
+    try:
+        band = Band.objects.get(name=name)
+    except ObjectDoesNotExist:
+        band = Band.objects.create(name=name, formation_year=formation_year, genre=genre)
+        band.members.set(member_ids)
     return band
 
 
 def create_album(title, release_date, genre, band_id):
-    return Album.objects.create(title=title, release_date=release_date, genre=genre, band_id=band_id)
+    try:
+        band = Band.objects.get(id=band_id)
+    except ObjectDoesNotExist:
+        return None
+
+    album, _ = Album.objects.get_or_create(
+        title=title,
+        band=band,
+        defaults={'release_date': release_date, 'genre': genre}
+    )
+    return album
 
 
 def search_music(query):
