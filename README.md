@@ -88,12 +88,19 @@ The core idea of this project is to create a flexible system where any custom fu
 
 ### Current Function Set
 
-The project comes with a set of basic mathematical operations as examples:
+The project comes with a set of functions to manage and query a music database:
 
-- Addition
-- Subtraction
-- Multiplication
-- Division
+- **create_artist**: Creates a new artist entry
+- **create_band**: Creates a new band entry
+- **create_album**: Creates a new album entry
+- **search_music**: Searches for music by title, band, or artist
+- **search_artists**: Searches for artists by name, instrument, or country
+- **search_bands**: Searches for bands by name, genre, formation year, or member name
+- **get_band_albums**: Retrieves all albums by a specific band
+- **get_albums_by_genre**: Retrieves all albums of a specific genre
+- **get_artist_bands**: Retrieves all bands an artist is a member of
+
+These functions allow for comprehensive management and querying of the music database, including creating new entries, performing various types of searches, and retrieving related information across artists, bands, and albums.
 
 These functions are defined in `FUNCTION_DICT` in `constants.py`.
 
