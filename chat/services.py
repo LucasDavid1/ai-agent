@@ -65,7 +65,7 @@ class GroqHandler:
     def execute_operations(self, processed_output):
         results = []
         context = {
-            'created_artists': {},
+            'created_artists': [],
             'created_band': None
         }
 
@@ -75,14 +75,13 @@ class GroqHandler:
             
             if func_name == 'create_artist':
                 result = call_function(func_name, **args)
-                context['created_artists'][result.id] = result
+                context['created_artists'].append(result)
             elif func_name == 'create_band':
                 member_ids = args.get('member_ids', [])
                 args['member_ids'] = [
-                    context['created_artists'][id].id 
-                    if id in context['created_artists'] 
-                    else id 
-                    for id in member_ids
+                    context['created_artists'][i-1].id 
+                    for i in member_ids 
+                    if 0 < i <= len(context['created_artists'])
                 ]
                 result = call_function(func_name, **args)
                 context['created_band'] = result

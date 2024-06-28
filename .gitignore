@@ -10,6 +10,7 @@ postgres_data/
 __pycache__/
 *.py[cod]
 *$py.class
+./jupyter_config/
 
 # Django
 *.log
