@@ -34,7 +34,7 @@ services:
       dockerfile: Dockerfile.jupyter
     ports:
       - "8888:8888"
-    command: jupyter lab --ip 0.0.0.0 --port 8888 --allow-root --no-browser --notebook-dir=/django --NotebookApp.token='8a9c55ff-e189-4b9d-b96c-a01f8be4643e'
+    command: jupyter lab --ip 0.0.0.0 --port 8888 --allow-root --no-browser --notebook-dir=/django --NotebookApp.token='${JUPYTER_TOKEN}'
     volumes:
       - .:/django
       - ./jupyter_config:/root/.jupyter
