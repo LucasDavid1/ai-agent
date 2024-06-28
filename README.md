@@ -73,10 +73,8 @@ The server will respond with:
 }
 ```
 
-Here's a README.md in markdown format explaining the Django project with the functionality you described:
-markdownCopy# AI Agent Django Project
 
-This Django project implements an AI agent that uses the Groq API to process user inputs and perform mathematical operations based on natural language requests.
+This Django project implements an AI agent that uses the Groq API to process user inputs and perform queries based on natural language requests.
 
 ## Project Overview
 
