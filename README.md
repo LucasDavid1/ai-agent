@@ -13,11 +13,6 @@ The AI agent interprets user queries, determines the appropriate mathematical fu
 - Dynamic function calling based on AI interpretation
 - RESTful API endpoint for easy integration
 
-## Setup
-
-1. Clone the repository
-2. Set up the environment variables in `.env`
-
 
 ## Usage
 
@@ -87,14 +82,9 @@ The AI agent interprets user queries, determines the appropriate mathematical fu
 ## Setup
 
 1. Clone the repository
-2. Install dependencies:
-`pip install -r requirements.txt`
-- `GROQ_API_KEY`: Your Groq API key
-- `POSTGRES`: Postgres credentials
-
-4. Run migrations:
+2. Run migrations:
 `make migrate`
-Start the Django server:
+3. Start the Django server:
 `make up`
 
 
