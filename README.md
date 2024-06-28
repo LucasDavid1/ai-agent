@@ -1,6 +1,6 @@
 # AI Agent Django Project
 
-This Django project implements an AI agent that uses the Groq API to process user inputs and perform mathematical operations based on natural language requests.
+This Django project implements an AI agent that uses the Groq API to process user inputs and perform queries based on natural language requests.
 
 ## Project Overview
 
@@ -72,9 +72,6 @@ The server will respond with:
     ]
 }
 ```
-
-
-This Django project implements an AI agent that uses the Groq API to process user inputs and perform queries based on natural language requests.
 
 ## Project Overview
 
