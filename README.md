@@ -70,7 +70,7 @@ The server will respond with:
 
 ## Project Overview
 
-The AI agent interprets user queries, determines the appropriate mathematical function to use, and returns the result. It leverages the Groq API with the LLaMA 3 70B model for natural language processing.
+The AI agent interprets user questions, determines the appropriate query function to use, and returns the result. It leverages the Groq API with the LLaMA 3 70B model for natural language processing.
 
 ## Key Features
 
